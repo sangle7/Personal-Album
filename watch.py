@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO,
 
 class NewImageHandler(LoggingEventHandler):
     def on_created(self, event):
-        if event.src_path.endswith('.jpg') or event.src_path.endswith('.png'):
+        if event.src_path.lower().endswith('.jpg') or event.src_path.lower().endswith(".jpeg") or event.src_path.lower().endswith('.png'):
             filename = os.path.basename(event.src_path)
             logging.info(f'New image added: {filename} ({event.src_path})')
             embed_by_file("images/"+filename)

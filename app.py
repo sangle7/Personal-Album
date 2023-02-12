@@ -22,7 +22,7 @@ def is_empty_or_none(string):
 def list_images(path):
     image_files = []
     for filename in os.listdir(path):
-        if filename.endswith(".jpg") or filename.endswith(".jpeg") or filename.endswith(".png") or filename.endswith(".gif"):
+        if filename.lower().endswith(".jpg") or filename.lower().endswith(".jpeg") or filename.lower().endswith(".png") or filename.lower().endswith(".gif"):
             image_files.append({"FileName": path + "/" + filename, "similarity": 1})
     return json.dumps(image_files)
 
@@ -32,7 +32,6 @@ def upload():
 
 @app.route('/dist/<path:filename>')
 def serve_client_static(filename):
-    print(filename)
     return send_from_directory('client/dist', filename)
 
 @app.route("/search")
