@@ -1,10 +1,9 @@
 import os
 import openai
 
-from src.download import embed_by_file
 from src.search import search_with_keywords
 from flask_cors import CORS
-from flask import Flask, redirect, render_template, request, jsonify, send_from_directory
+from flask import Flask, send_file, request, jsonify, send_from_directory
 
 app = Flask(__name__)
 CORS(app)
@@ -20,15 +19,14 @@ def is_empty_or_none(string):
         return False
 
 
-@app.route("/upload", methods=["POST"])
-def index():
-    if request.method == "POST":
-        fileName = request.form["fileName"]
-        embed_by_file(fileName)
+@app.route("/")
+def upload():
+    return send_file('client/index.html')
 
-    result = request.args.get("result")
-    return render_template("index.html", result=result)
-
+@app.route('/dist/<path:filename>')
+def serve_client_static(filename):
+    print(filename)
+    return send_from_directory('client/dist', filename)
 
 @app.route("/search")
 def search():
@@ -42,6 +40,6 @@ def search():
 
 
 @app.route('/images/<path:filename>')
-def serve_static(filename):
+def serve_static_images(filename):
     print(filename)
     return send_from_directory('images', filename)

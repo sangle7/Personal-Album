@@ -22,16 +22,9 @@ export default {
     }),
     commonjs(),
     babel({ babelHelpers: 'bundled' }),
-    livereload({
-      watch: 'dist'
-    }),
-    serve({
-      contentBase: '',
-      port: 3000
-    }),
     replace({
       preventAssignment: true,
-      'process.env.NODE_ENV': JSON.stringify('development')
+      'process.env.NODE_ENV': JSON.stringify( 'production' )
     })
   ]
 };
