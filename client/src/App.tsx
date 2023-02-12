@@ -1,4 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+
+import Box from '@mui/material/Box';
+import TitlebarImageList from './ImageList';
 import useStyles from './styles';
 
 interface Props {}
@@ -8,6 +13,18 @@ const ExampleComponent: React.FC<Props> = () => {
   const [query, setQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [images, setImages] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('http://127.0.0.1:5000/search');
+      const json = await response.json();
+      setImages(json);
+    };
+
+    console.log('run!')
+
+    fetchData();
+  }, []);
 
   const fetchImages = async () => {
     setLoading(true);
@@ -23,31 +40,28 @@ const ExampleComponent: React.FC<Props> = () => {
 
   return (
     <div className={classes.container}>
-      <h1 className={classes.root}>Search Images By Text</h1>
-      <input
-        type='text'
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        onKeyDown={handleKeyDown}
-      />
-      <button onClick={fetchImages}> Submit </button>
-      <div className={classes.imageGallery}>
-        {loading ? (
-          <div className={classes.loader}></div>
-        ) : (
-          images &&
-          images.map((image, index) => (
-            <div className={classes.singleImageContainer}>
-              <img
-                height='300'
-                key={index}
-                src={`http://127.0.0.1:5000/${image['FileName']}`}
-              />
-              <p>similarity: {image['similarity']}</p>
-            </div>
-          ))
-        )}
-      </div>
+      <Box
+        sx={{
+          '& > :not(style)': { m: 1, width: '25ch' },
+        }}
+      >
+        <TextField
+          id='outlined-basic'
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
+          label='Search Images By Text'
+          variant='outlined'
+        />
+        <Button variant='contained' onClick={fetchImages}>
+          Submit
+        </Button>
+      </Box>
+      {loading ? (
+        <div className={classes.loader}></div>
+      ) : (
+        <TitlebarImageList itemData={images} />
+      )}
     </div>
   );
 };

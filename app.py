@@ -1,5 +1,6 @@
 import os
 import openai
+import json
 
 from src.search import search_with_keywords
 from flask_cors import CORS
@@ -18,6 +19,12 @@ def is_empty_or_none(string):
     else:
         return False
 
+def list_images(path):
+    image_files = []
+    for filename in os.listdir(path):
+        if filename.endswith(".jpg") or filename.endswith(".jpeg") or filename.endswith(".png") or filename.endswith(".gif"):
+            image_files.append({"FileName": path + "/" + filename, "similarity": 1})
+    return json.dumps(image_files)
 
 @app.route("/")
 def upload():
@@ -33,7 +40,7 @@ def search():
     if request.method == "GET":
         query = request.args.get('query')
         if (is_empty_or_none(query)):
-            return jsonify({"error_message": "Please enter a query"}), 400
+            return list_images('images')
         else:
             # return query
             return search_with_keywords(query)
