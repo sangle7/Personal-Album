@@ -4,7 +4,7 @@ import logging
 from watchdog.observers import Observer
 from watchdog.events import LoggingEventHandler
 import os
-from download import embed_by_file
+from src.download import embed_by_file
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(message)s',

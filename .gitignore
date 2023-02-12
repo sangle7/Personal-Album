@@ -1,4 +1,6 @@
 __pycache__/
 images/
 dataset/
+dist/
 .env
+node_modules/
