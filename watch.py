@@ -1,9 +1,10 @@
-import sys
+import os
 import time
 import logging
+
 from watchdog.observers import Observer
 from watchdog.events import LoggingEventHandler
-import os
+
 from src.download import embed_by_file
 
 logging.basicConfig(level=logging.INFO,
@@ -12,22 +13,33 @@ logging.basicConfig(level=logging.INFO,
 
 
 class NewImageHandler(LoggingEventHandler):
+    IMAGE_EXTENSIONS = ('.jpg', '.jpeg', '.png')
+
     def on_created(self, event):
-        if event.src_path.lower().endswith('.jpg') or event.src_path.lower().endswith(".jpeg") or event.src_path.lower().endswith('.png'):
+        if event.src_path.lower().endswith(self.IMAGE_EXTENSIONS):
             filename = os.path.basename(event.src_path)
+            filepath = os.path.join('images', filename)
             logging.info(f'New image added: {filename} ({event.src_path})')
-            embed_by_file("images/"+filename)
+            embed_by_file(filepath)
 
 
 if __name__ == "__main__":
-    path = os.getcwd() + "/images"
+    images_folder = os.path.join(os.getcwd(), "images")
+    
+    if not os.path.exists(images_folder):
+        os.makedirs(images_folder)
+
     event_handler = NewImageHandler()
     observer = Observer()
-    observer.schedule(event_handler, path, recursive=False)
+
+    observer.schedule(event_handler, images_folder, recursive=False)
     observer.start()
+
     try:
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
         observer.stop()
-    observer.join()
+
+    with observer:
+        observer.join()
