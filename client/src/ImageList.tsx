@@ -10,7 +10,7 @@ interface Props {
 
 const TitlebarImageList: React.FC<Props> = ({ itemData = [] }) => {
   return (
-    <ImageList sx={{ width: 800, height: 800 }} variant="masonry" cols={3} gap={8}>
+    <ImageList sx={{ width: 800 }} variant="masonry" cols={3} gap={8}>
       {itemData.map((item) => (
         <ImageListItem key={item.img}>
           <img src={`http://localhost:5000/${item.FileName}`} alt={item.FileName} loading='lazy' />
