@@ -5,8 +5,7 @@ import openai
 from openai.embeddings_utils import get_embedding, cosine_similarity
 from pandas import DataFrame
 
-
-def search_with_keywords(query) -> str:
+def search_with_keywords(query):
     datafile_path = "dataset/image-to-text.csv"
 
     df = pd.read_csv(datafile_path)
@@ -30,6 +29,8 @@ def search_with_keywords(query) -> str:
         return results
 
 
-    results = search_reviews(df, query, n=3)
+    results = search_reviews(df, query, n=10)
 
-    return results[['FileName','similarity']].to_json(orient='records')
+    results = results[(results['similarity'] > 0.8)]
+
+    return results['FileName']
