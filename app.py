@@ -63,6 +63,25 @@ def search():
             listIds = search_with_keywords(query)
             return get_drive_items(listIds, request.headers.get('authorization'))
 
+@app.route("/mobsearch")
+def mobsearch():
+    if request.method == "GET":
+        query = request.args.get('query')
+        cid = request.args.get('cid')
+        if (is_empty_or_none(query)):
+            return list_images('images')
+        else:
+            # return query
+            NAME_TO_ID_MAPPING = []
+            result = search_with_keywords(query)
+            itemdNames = [item["FileName"].split("/")[1].lower() for item in json.loads(result) if item["similarity"] > 0.8]
+            print(itemdNames)
+            itemdIds = [i["resourceId"] for i in NAME_TO_ID_MAPPING if i["name"].lower()+i["extension"].lower() in itemdNames]
+            print(itemdIds)
+            if len(itemdIds) > 0:
+                vroom = VroomProvider(cid=cid, auth=request.headers.get("authorization"))
+                return json.dumps(vroom.loadAllItemsV1(itemdIds))
+            return  json.dumps({})
 
 @app.route('/images/<path:filename>')
 def serve_static_images(filename):
